@@ -16,20 +16,31 @@
       color: #333;
     }
     #result {
-      margin-top: 2em;
-      font-size: 3em;
+      margin-top: 1em;
+      font-size: 2.5em;
       color: #e91e63;
-      min-height: 2em;
+    }
+    #drawn {
+      margin-top: 2em;
+      font-size: 1.2em;
+      color: #333;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+      word-wrap: break-word;
+    }
+    input, button {
+      padding: 0.5em 1em;
+      font-size: 1em;
+      margin: 0.5em;
+      border-radius: 8px;
+      border: 1px solid #aaa;
     }
     button {
-      padding: 1em 2em;
-      font-size: 1.5em;
       background-color: #4caf50;
       color: white;
       border: none;
-      border-radius: 12px;
       cursor: pointer;
-      margin: 1em;
     }
     button:hover {
       background-color: #388e3c;
@@ -38,12 +49,34 @@
 </head>
 <body>
   <h1>🎲 抽學生號碼</h1>
+
+  <div>
+    <label>學生人數：</label>
+    <input type="number" id="studentCount" min="1" max="100" value="36">
+    <button onclick="initStudents()">設定</button>
+  </div>
+
   <button onclick="drawStudent()">抽一位</button>
-  <div id="result"></div>
+  <div id="result">請先設定學生人數</div>
+  <div id="drawn">已抽出：-</div>
 
   <script>
-    const students = Array.from({length: 36}, (_, i) => i + 1); // 1～36號
-    let remaining = [...students];
+    let students = [];
+    let remaining = [];
+    let drawnList = [];
+
+    function initStudents() {
+      const count = parseInt(document.getElementById("studentCount").value);
+      if (isNaN(count) || count < 1) {
+        alert("請輸入正確的學生人數");
+        return;
+      }
+      students = Array.from({length: count}, (_, i) => i + 1);
+      remaining = [...students];
+      drawnList = [];
+      document.getElementById("result").textContent = "名單已設定，開始抽籤吧！";
+      updateDrawnList();
+    }
 
     function drawStudent() {
       if (remaining.length === 0) {
@@ -52,8 +85,15 @@
       }
 
       const index = Math.floor(Math.random() * remaining.length);
-      const number = remaining.splice(index, 1)[0]; // 抽一個並移除
+      const number = remaining.splice(index, 1)[0];
+      drawnList.push(number);
       document.getElementById("result").textContent = `🧑‍🎓 號碼：${number}`;
+      updateDrawnList();
+    }
+
+    function updateDrawnList() {
+      const list = drawnList.length > 0 ? drawnList.join(", ") : "-";
+      document.getElementById("drawn").textContent = "已抽出：" + list;
     }
   </script>
 </body>
