@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>學生抽籤拉霸機</title>
+  <title>學生抽籤擲骰機</title>
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
       padding: 2em;
-      background: #f0f8ff;
+      background: #fff8e1;
     }
     h1 {
       color: #333;
@@ -23,19 +23,19 @@
       border: 1px solid #aaa;
     }
     button {
-      background-color: #4caf50;
+      background-color: #ff9800;
       color: white;
       border: none;
       cursor: pointer;
     }
     button:hover {
-      background-color: #388e3c;
+      background-color: #ef6c00;
     }
     #result {
       margin-top: 1em;
       font-size: 2em;
       min-height: 2em;
-      color: #e91e63;
+      color: #d84315;
     }
     #drawn {
       margin-top: 2em;
@@ -45,23 +45,28 @@
       margin-right: auto;
       word-wrap: break-word;
     }
-    .slot {
+    .dice {
       display: inline-block;
-      font-size: 3em;
       width: 80px;
       height: 80px;
-      margin: 0.3em;
-      background: #fff;
-      border: 3px solid #ccc;
-      border-radius: 12px;
+      background-color: #fff;
+      border: 4px solid #ffcc80;
+      border-radius: 20px;
       box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      font-size: 2em;
       line-height: 80px;
-      vertical-align: middle;
+      margin: 0.5em;
+      animation: roll 0.6s ease-in-out;
+    }
+    @keyframes roll {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(720deg); }
+      100% { transform: rotate(0deg); }
     }
   </style>
 </head>
 <body>
-  <h1>🎰 學生抽籤拉霸機</h1>
+  <h1>🎲 學生抽籤骰子機</h1>
 
   <div>
     <label>學生人數：</label>
@@ -72,7 +77,7 @@
     <button onclick="resetAll()">重設</button>
   </div>
 
-  <button onclick="drawStudents()">抽籤 🎲</button>
+  <button onclick="drawStudents()">擲骰！</button>
 
   <div id="result">請先設定學生人數</div>
   <div id="drawn">已抽出：-</div>
@@ -112,31 +117,31 @@
         return;
       }
 
-      let slots = [];
+      let diceResults = [];
       for (let i = 0; i < drawCount; i++) {
         const idx = Math.floor(Math.random() * remaining.length);
         const number = remaining.splice(idx, 1)[0];
         drawnList.push(number);
-        slots.push(number);
+        diceResults.push(number);
       }
 
-      showSlotAnimation(slots);
+      showDiceAnimation(diceResults);
       updateDrawnList();
     }
 
-    function showSlotAnimation(numbers) {
+    function showDiceAnimation(numbers) {
       const container = document.getElementById("result");
-      container.innerHTML = ""; // 清空
+      container.innerHTML = "";
 
       numbers.forEach((num, i) => {
         const el = document.createElement("div");
-        el.className = "slot";
+        el.className = "dice";
         el.textContent = "🎲";
         container.appendChild(el);
 
         setTimeout(() => {
           el.textContent = num;
-        }, 600 + i * 300); // 模擬拉霸停下的時間差
+        }, 600 + i * 300); // 每個骰子依序停下
       });
     }
 
