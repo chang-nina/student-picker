@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>學生抽籤機</title>
+  <title>學生抽籤拉霸機</title>
   <style>
     body {
       font-family: sans-serif;
@@ -14,20 +14,6 @@
     }
     h1 {
       color: #333;
-    }
-    #result {
-      margin-top: 1em;
-      font-size: 2.5em;
-      color: #e91e63;
-    }
-    #drawn {
-      margin-top: 2em;
-      font-size: 1.2em;
-      color: #333;
-      max-width: 90%;
-      margin-left: auto;
-      margin-right: auto;
-      word-wrap: break-word;
     }
     input, button {
       padding: 0.5em 1em;
@@ -45,18 +31,49 @@
     button:hover {
       background-color: #388e3c;
     }
+    #result {
+      margin-top: 1em;
+      font-size: 2em;
+      min-height: 2em;
+      color: #e91e63;
+    }
+    #drawn {
+      margin-top: 2em;
+      font-size: 1em;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+      word-wrap: break-word;
+    }
+    .slot {
+      display: inline-block;
+      font-size: 3em;
+      width: 80px;
+      height: 80px;
+      margin: 0.3em;
+      background: #fff;
+      border: 3px solid #ccc;
+      border-radius: 12px;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      line-height: 80px;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
-  <h1>🎲 抽學生號碼</h1>
+  <h1>🎰 學生抽籤拉霸機</h1>
 
   <div>
     <label>學生人數：</label>
     <input type="number" id="studentCount" min="1" max="100" value="36">
+    <label>每次抽幾位：</label>
+    <input type="number" id="drawCount" min="1" max="10" value="1">
     <button onclick="initStudents()">設定</button>
+    <button onclick="resetAll()">重設</button>
   </div>
 
-  <button onclick="drawStudent()">抽一位</button>
+  <button onclick="drawStudents()">抽籤 🎲</button>
+
   <div id="result">請先設定學生人數</div>
   <div id="drawn">已抽出：-</div>
 
@@ -74,21 +91,53 @@
       students = Array.from({length: count}, (_, i) => i + 1);
       remaining = [...students];
       drawnList = [];
-      document.getElementById("result").textContent = "名單已設定，開始抽籤吧！";
+      document.getElementById("result").textContent = "✅ 設定完成，準備抽籤！";
       updateDrawnList();
     }
 
-    function drawStudent() {
+    function resetAll() {
+      document.getElementById("studentCount").value = 36;
+      document.getElementById("drawCount").value = 1;
+      initStudents();
+    }
+
+    function drawStudents() {
+      const drawCount = parseInt(document.getElementById("drawCount").value);
       if (remaining.length === 0) {
         document.getElementById("result").textContent = "🎉 全部抽完了！";
         return;
       }
+      if (drawCount > remaining.length) {
+        alert("剩下的人數不足，請調整抽取數量");
+        return;
+      }
 
-      const index = Math.floor(Math.random() * remaining.length);
-      const number = remaining.splice(index, 1)[0];
-      drawnList.push(number);
-      document.getElementById("result").textContent = `🧑‍🎓 號碼：${number}`;
+      let slots = [];
+      for (let i = 0; i < drawCount; i++) {
+        const idx = Math.floor(Math.random() * remaining.length);
+        const number = remaining.splice(idx, 1)[0];
+        drawnList.push(number);
+        slots.push(number);
+      }
+
+      showSlotAnimation(slots);
       updateDrawnList();
+    }
+
+    function showSlotAnimation(numbers) {
+      const container = document.getElementById("result");
+      container.innerHTML = ""; // 清空
+
+      numbers.forEach((num, i) => {
+        const el = document.createElement("div");
+        el.className = "slot";
+        el.textContent = "🎲";
+        container.appendChild(el);
+
+        setTimeout(() => {
+          el.textContent = num;
+        }, 600 + i * 300); // 模擬拉霸停下的時間差
+      });
     }
 
     function updateDrawnList() {
