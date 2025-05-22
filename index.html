@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>學生抽籤機</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+      background: #f0f8ff;
+    }
+    h1 {
+      color: #333;
+    }
+    #result {
+      margin-top: 2em;
+      font-size: 3em;
+      color: #e91e63;
+      min-height: 2em;
+    }
+    button {
+      padding: 1em 2em;
+      font-size: 1.5em;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 1em;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎲 抽學生號碼</h1>
+  <button onclick="drawStudent()">抽一位</button>
+  <div id="result"></div>
+
+  <script>
+    const students = Array.from({length: 36}, (_, i) => i + 1); // 1～36號
+    let remaining = [...students];
+
+    function drawStudent() {
+      if (remaining.length === 0) {
+        document.getElementById("result").textContent = "🎉 全部抽完了！";
+        return;
+      }
+
+      const index = Math.floor(Math.random() * remaining.length);
+      const number = remaining.splice(index, 1)[0]; // 抽一個並移除
+      document.getElementById("result").textContent = `🧑‍🎓 號碼：${number}`;
+    }
+  </script>
+</body>
+</html>
